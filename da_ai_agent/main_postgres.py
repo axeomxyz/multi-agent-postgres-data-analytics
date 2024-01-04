@@ -3,19 +3,19 @@ Heads up: in v7 pyautogen doesn't work with the latest openai version so this fi
 """
 
 import os
-from postgres_da_ai_agent.agents.instruments import PostgresAgentInstruments
-from postgres_da_ai_agent.modules.db import PostgresManager
-from postgres_da_ai_agent.modules import llm
-from postgres_da_ai_agent.modules import orchestrator
-from postgres_da_ai_agent.modules import rand
-from postgres_da_ai_agent.modules import file
-from postgres_da_ai_agent.modules import embeddings
-from postgres_da_ai_agent.agents import agents
+from da_ai_agent.agents.instruments import PostgresAgentInstruments
+from da_ai_agent.modules.db_postgres import PostgresManager
+from da_ai_agent.modules import llm
+from da_ai_agent.modules import orchestrator
+from da_ai_agent.modules import rand
+from da_ai_agent.modules import file
+from da_ai_agent.modules import embeddings_postgres
+from da_ai_agent.agents import agents_postgres
 import dotenv
 import argparse
 import autogen
 
-from postgres_da_ai_agent.data_types import ConversationResult
+from da_ai_agent.data_types import ConversationResult
 
 
 # ---------------- Your Environment Variables ----------------
@@ -28,7 +28,7 @@ assert os.environ.get(
 ), "POSTGRES_CONNECTION_URL not found in .env file"
 
 
-# ---------------- Constants ----------------
+# ---------------- Constants ---------------------------------
 
 
 DB_URL = os.environ.get("DATABASE_URL")
@@ -59,7 +59,7 @@ def main():
     with PostgresAgentInstruments(DB_URL, session_id) as (agent_instruments, db):
         # ----------- Gate Team: Prevent bad prompts from running and burning your $$$ -------------
 
-        gate_orchestrator = agents.build_team_orchestrator(
+        gate_orchestrator = agents_postgres.build_team_orchestrator(
             "scrum_master",
             agent_instruments,
             validate_results=lambda: (True, ""),
@@ -87,7 +87,7 @@ def main():
 
         map_table_name_to_table_def = db.get_table_definition_map_for_embeddings()
 
-        database_embedder = embeddings.DatabaseEmbedder()
+        database_embedder = embeddings_postgres.DatabaseEmbedder()
 
         for name, table_def in map_table_name_to_table_def.items():
             database_embedder.add_table(name, table_def)
@@ -113,9 +113,9 @@ def main():
             table_definitions,
         )
 
-        # ----------- Data Eng Team: Based on a sql table definitions and a prompt create an sql statement and execute it -------------
+        # ----------- Data Eng Team: Based on a SQL table definitions and a prompt create an sql statement and execute it -------------
 
-        data_eng_orchestrator = agents.build_team_orchestrator(
+        data_eng_orchestrator = agents_postgres.build_team_orchestrator(
             "data_eng",
             agent_instruments,
             validate_results=agent_instruments.validate_run_sql,
@@ -151,7 +151,7 @@ def main():
             core_and_related_table_definitions,
         )
 
-        data_insights_orchestrator = agents.build_team_orchestrator(
+        data_insights_orchestrator = agents_postgres.build_team_orchestrator(
             "data_insights",
             agent_instruments,
             validate_results=agent_instruments.validate_innovation_files,

@@ -1,7 +1,7 @@
 import autogen
 
 
-# build the gpt_configuration object
+# Build the GPT_Configuration object
 # Base Configuration
 base_config = {
     "use_cache": False,
