@@ -11,6 +11,8 @@ from openai.types.beta.threads.thread_message import ThreadMessage
 from openai.types.beta.threads.run_submit_tool_outputs_params import ToolOutput
 from da_ai_agent.modules import llm
 from da_ai_agent.data_types import Chat, TurboTool
+from da_ai_agent.modules.embeddings_presto import DatabaseEmbedder
+
 
 dotenv.load_dotenv()
 
@@ -33,6 +35,7 @@ class Turbo4:
             0.5  # Interval in seconds to poll the API for thread run completion
         )
         self.model = "gpt-4-1106-preview"
+        self.db_embedder = None
 
     @property
     def chat_messages(self) -> List[Chat]:
@@ -86,6 +89,7 @@ class Turbo4:
         with open(schema_output_file, "w") as f:
             f.write(table_definitions)
 
+        self.schema_file_path = schema_output_file
         return self
 
     def store_query_results(self, results_output_file: str, sql_results):
@@ -100,6 +104,20 @@ class Turbo4:
         # Use the sql_results directly for storing
         with open(results_output_file, "w") as f:
             f.write(sql_results)
+
+        return self
+
+    def store_schema_description(self, schema_description_output_file: str, schema_description: str):
+        """
+        Stores the schema description in a TXT file.
+
+        :param schema_description_output_file: The output file path to store the schema description.
+        :param schema_description: The schema description data to be stored (formatted as a string).
+        """
+        print("Storing schema description in a TXT file.")
+
+        with open(schema_description_output_file, "w") as f:
+            f.write(schema_description)
 
         return self
 
@@ -297,16 +315,49 @@ class Turbo4:
                     run_id=self.run_id,
                     tool_outputs=tool_outputs,
                 )
-            elif run_status.status == "completed":
-                self.load_threads()
+                if run_status.status == "completed":
+                    self.load_threads()
 
-                # Store SQL results if available
-                if sql_results:
-                    self.store_query_results(self.agent_instruments.make_query_results_file(), sql_results)
+                    # Store SQL results if available
+                    if sql_results:
+                        self.store_query_results(self.agent_instruments.make_query_results_file(), sql_results)
 
-                return self
+                        # Generate definitions for each column
+                        column_definitions = self.generate_column_definitions(sql_results)
+
+                    return self
 
             time.sleep(self.polling_interval)
+
+    def generate_column_definitions(self, sql_results):
+        """
+        Generate short definitions for each column in the SQL results.
+        """
+        column_definitions = {}
+        for column_name in self.extract_column_names(sql_results):
+            try:
+                # Generate a short definition for each column
+                response = openai.Completion.create(
+                    engine="gpt-4-1106-preview",  # Update to the latest available model
+                    prompt=f"Define {column_name} in 2-5 words:",
+                    max_tokens=10
+                )
+                definition = response.choices[0].text.strip()
+                column_definitions[column_name] = definition
+            except Exception as e:
+                print(f"Error generating definition for column {column_name}: {e}")
+                column_definitions[column_name] = "Definition not available"
+        return column_definitions
+
+    def extract_column_names(self, sql_results):
+        """
+        Extract column names from the SQL results.
+        """
+        # Assuming sql_results is in a format where you can extract column names
+        # This needs to be implemented based on your specific SQL results format
+        column_names = []
+        # ... extract column names from sql_results ...
+        return column_names
 
     def enable_retrieval(self):
         print(f"enable_retrieval()")

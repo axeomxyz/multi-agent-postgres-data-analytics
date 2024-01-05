@@ -90,11 +90,14 @@ def run_framework(query: str):
         # Retrieve all table definitions
         table_definitions = database_embedder.get_all_table_defs()
 
-        # Create the full file path for the table definitions file
+        # Retrieve all the relationships between tables
+        schema_description = database_embedder.get_schema_description()
+
+        # Create the full file path for the schema.txt
         schema_output_file = agent_instruments.make_table_definitions_file()
 
-        # Create a schema description file with the primary and foreign keys
-        schema_description = agent_instruments.make_table_description_file()
+        # Create the full file path for the schema_description.txt
+        schema_description_output_file = agent_instruments.make_schema_description_file()
 
         prompt = llm.add_cap_ref(
             prompt,
@@ -117,6 +120,7 @@ def run_framework(query: str):
             .add_message(prompt)
             .run_thread()
             .store_table_definitions(schema_output_file, table_definitions)
+            .store_schema_description(schema_description_output_file, schema_description)
             .add_message(
                 "Use the run_sql function to run the SQL you've just generated.",
             )

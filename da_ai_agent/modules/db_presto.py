@@ -96,14 +96,38 @@ class PrestoManager:
         rows = self.cur.fetchall()
 
         # Dictionary to hold the table definition
-        table_definition = {table_name: {}}
+        table_definition = {table_name.upper(): {}}  # Table name in uppercase
 
         # Adding each column as a key-value pair in the table definition dictionary
         for row in rows:
             column_name, column_type, _ = row[:3]
-            table_definition[table_name][column_name] = column_type
+            table_definition[table_name.upper()][column_name.lower()] = column_type.lower()
 
         return table_definition
+
+    def get_related_tables_with_shared_columns(self):
+        """
+        Get pairs of related tables along with their shared column names.
+        """
+        def get_table_columns(table_name):
+            """
+            Local helper function to get column names for a given table.
+            """
+            self.cur.execute(f"DESCRIBE {table_name}")
+            return [row[0].lower() for row in self.cur.fetchall()]
+
+        table_names = self.get_all_table_names()
+        table_columns = {table: get_table_columns(table) for table in table_names}
+
+        related_table_pairs = []
+        for table, columns in table_columns.items():
+            for other_table, other_columns in table_columns.items():
+                if table < other_table:  # This condition avoids duplicate pairs like (A, B) and (B, A)
+                    shared_columns = set(columns).intersection(other_columns)
+                    if shared_columns:
+                        related_table_pairs.append((table, other_table, list(shared_columns)))
+
+        return related_table_pairs
 
     def get_table_definitions_for_prompt(self):
         """
@@ -126,35 +150,3 @@ class PrestoManager:
             definitions.update(self.get_table_definition(table_name))
         return definitions
 
-
-    def get_related_tables(self, table_list, n=2):
-        """
-        Get tables that are related to the given tables in PrestoDB.
-        Note: This function assumes a custom mechanism to track relationships,
-        as PrestoDB does not support foreign keys natively.
-        """
-
-        related_tables_dict = {}
-
-        for table in table_list:
-            # Example query to fetch related tables based on a custom mechanism
-            # Adjust the query based on your specific setup.
-            self.cur.execute(
-                """
-                SELECT related_table
-                FROM custom_relationships_table
-                WHERE table_name = %s
-                LIMIT %s;
-                """,
-                (table, n),
-            )
-
-            related_tables = [row[0] for row in self.cur.fetchall()]
-            related_tables_dict[table] = related_tables
-
-        # Convert dict to list and remove duplicates
-        related_tables_list = []
-        for related_tables in related_tables_dict.values():
-            related_tables_list.extend(related_tables)
-
-        return list(set(related_tables_list))

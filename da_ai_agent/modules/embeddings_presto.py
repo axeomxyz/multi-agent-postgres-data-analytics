@@ -115,7 +115,7 @@ class DatabaseEmbedder:
 
         for table_name in table_names:
             table_def = self.map_name_to_table_def[table_name]
-            formatted_table_defs += f"{table_name}\n"
+            formatted_table_defs += f"{table_name.upper()}\n"  # Table name in uppercase
 
             for column_name, data_type in table_def.items():
                 formatted_table_defs += f"{column_name}, {data_type}\n"
@@ -123,6 +123,22 @@ class DatabaseEmbedder:
             formatted_table_defs += "\n"  # Add a blank line between tables for readability
 
         return formatted_table_defs
+
+    def get_schema_description(self):
+        """
+        Generate a schema description that includes related tables and shared columns,
+        formatted as 'table1, table2; columnA, columnB' for each row.
+        """
+        related_tables_info = self.db.get_related_tables_with_shared_columns()
+
+        schema_description_lines = []
+        for table_pair in related_tables_info:
+            table1, table2, shared_columns = table_pair
+            shared_columns_str = ", ".join(shared_columns)
+            description_line = f"{table1}, {table2}; {shared_columns_str}"
+            schema_description_lines.append(description_line)
+
+        return "\n".join(schema_description_lines)
 
     def get_all_table_defs(self):
         """
