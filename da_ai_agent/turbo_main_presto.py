@@ -159,6 +159,7 @@ def run_framework(query: str):
 
 
 # Function to handle command-line arguments and invoke run_framework
+# poetry run turbo_presto --prompt "What tables do we have available?"
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--prompt", help="The prompt for the AI")

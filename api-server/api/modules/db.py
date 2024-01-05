@@ -44,7 +44,7 @@ class PostgresManager:
         list_of_dicts = [dict(zip(columns, row)) for row in res]
 
         json_result = json.dumps(list_of_dicts, indent=4, default=self.datetime_handler)
-
+        print(f"JSON REsult: {json_result}")
         return json_result
 
     def datetime_handler(self, obj):
