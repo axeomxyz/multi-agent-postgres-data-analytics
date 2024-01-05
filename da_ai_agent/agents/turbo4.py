@@ -107,7 +107,7 @@ class Turbo4:
 
         return self
 
-    def store_schema_description(self, schema_description_output_file: str, schema_description: str):
+    def store_schema_description(self, schema_description_output_file: str, schema_description):
         """
         Stores the schema description in a TXT file.
 

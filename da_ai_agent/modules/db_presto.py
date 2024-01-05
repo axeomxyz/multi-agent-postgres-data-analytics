@@ -80,12 +80,11 @@ class PrestoManager:
         return str(obj)
 
     def get_all_table_names(self):
-        """
-        Get all table names in the PrestoDB database
-        """
-        # Adjusted query for PrestoDB
+        print("Starting get_all_table_names")
         self.cur.execute("SHOW TABLES")
-        return [row[0] for row in self.cur.fetchall()]
+        tables = [row[0] for row in self.cur.fetchall()]
+        print(f"Tables found: {tables}")
+        return tables
 
     def get_table_definition(self, table_name):
         """
@@ -106,26 +105,32 @@ class PrestoManager:
         return table_definition
 
     def get_related_tables_with_shared_columns(self):
-        """
-        Get pairs of related tables along with their shared column names.
-        """
+        print("Starting get_related_tables_with_shared_columns")
+
         def get_table_columns(table_name):
             """
             Local helper function to get column names for a given table.
             """
+            print(f"Getting columns for table: {table_name}")
             self.cur.execute(f"DESCRIBE {table_name}")
-            return [row[0].lower() for row in self.cur.fetchall()]
+            columns = [row[0].lower() for row in self.cur.fetchall()]
+            print(f"Columns found for {table_name}: {columns}")
+            return columns
 
         table_names = self.get_all_table_names()
+        print(f"Table names: {table_names}")
+
         table_columns = {table: get_table_columns(table) for table in table_names}
+        print(f"Table columns: {table_columns}")
 
         related_table_pairs = []
         for table, columns in table_columns.items():
             for other_table, other_columns in table_columns.items():
-                if table < other_table:  # This condition avoids duplicate pairs like (A, B) and (B, A)
+                if table < other_table:
                     shared_columns = set(columns).intersection(other_columns)
                     if shared_columns:
                         related_table_pairs.append((table, other_table, list(shared_columns)))
+                        print(f"Related table pair found: {table}, {other_table}, {shared_columns}")
 
         return related_table_pairs
 
