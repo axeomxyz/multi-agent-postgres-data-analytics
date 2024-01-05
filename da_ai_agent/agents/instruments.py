@@ -44,7 +44,6 @@ class AgentInstruments:
     def make_schema_description_file():
         return os.path.join(BASE_DIR, f"schema_description.txt")
 
-    @staticmethod
     def make_query_results_file(self):
         return os.path.join(self.root_dir, f"query_results.txt")
 

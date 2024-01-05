@@ -315,17 +315,14 @@ class Turbo4:
                     run_id=self.run_id,
                     tool_outputs=tool_outputs,
                 )
-                if run_status.status == "completed":
-                    self.load_threads()
+            elif run_status.status == "completed":
+                self.load_threads()
 
-                    # Store SQL results if available
-                    if sql_results:
-                        self.store_query_results(self.agent_instruments.make_query_results_file(), sql_results)
+                # Store SQL results if available
+                if sql_results:
+                    self.store_query_results(self.agent_instruments.make_query_results_file(), sql_results)
 
-                        # Generate definitions for each column
-                        column_definitions = self.generate_column_definitions(sql_results)
-
-                    return self
+                return self
 
             time.sleep(self.polling_interval)
 
