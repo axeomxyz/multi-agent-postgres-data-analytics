@@ -15,6 +15,7 @@ poetry run start_presto --prompt "[Include your prompt here]"
 
 Entry points for running PrestoDB tasks:
 
+```tree
 da_ai_agent/
 │
 ├── main_presto.py         # Used by start_presto
@@ -22,6 +23,7 @@ da_ai_agent/
 │
 └── turbo_main_presto.py   # Used by turbo_presto
     └── turbo_presto = "da_ai_agent.turbo_main_presto:main"
+```
 
 ### PostgreSQL Setup
 
@@ -32,6 +34,8 @@ poetry run turbo_postgres --prompt "[Include your prompt here]"
 poetry run start_postgres --prompt "[Include your prompt here]"
 ```
 
+Entry points for running PostgreSQL tasks:
+
 ```tree
 da_ai_agent/
 │
@@ -41,7 +45,6 @@ da_ai_agent/
 └── turbo_main_postgres.py # Used by turbo_postgres
     └── turbo_postgres = "da_ai_agent.turbo_main_postgres:main"
 ```
-
 
 ## Environment Variables
 
