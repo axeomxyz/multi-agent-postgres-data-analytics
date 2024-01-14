@@ -23,7 +23,9 @@ This repository provides an AI-powered interface for interacting with PrestoDB a
 
 ```bash
 poetry install
-```   
+```  
+
+If you encounter a warning that `poetry.lock` is not consistent with `pyproject.toml`, run `poetry lock --no-update` to fix it.
 
 3. Set up environment variables:
 Create a .env file in the root directory with the necessary environment variables.
