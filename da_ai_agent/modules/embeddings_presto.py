@@ -125,9 +125,7 @@ class DatabaseEmbedder:
         return formatted_table_defs
 
     def get_schema_description(self):
-        print("Starting get_schema_description")
         related_tables_info = self.db.get_related_tables_with_shared_columns()
-        print(f"Related tables info: {related_tables_info}")
 
         schema_description_lines = []
         for table_pair in related_tables_info:
@@ -135,7 +133,6 @@ class DatabaseEmbedder:
             shared_columns_str = ", ".join(shared_columns)
             description_line = f"{table1}, {table2}; {shared_columns_str}"
             schema_description_lines.append(description_line)
-            print(f"Schema description line added: {description_line}")
 
         return "\n".join(schema_description_lines)
 

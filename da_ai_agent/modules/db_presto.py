@@ -105,23 +105,20 @@ class PrestoManager:
         return table_definition
 
     def get_related_tables_with_shared_columns(self):
-        print("Starting get_related_tables_with_shared_columns")
+
 
         def get_table_columns(table_name):
             """
             Local helper function to get column names for a given table.
             """
-            print(f"Getting columns for table: {table_name}")
             self.cur.execute(f"DESCRIBE {table_name}")
             columns = [row[0].lower() for row in self.cur.fetchall()]
-            print(f"Columns found for {table_name}: {columns}")
+
             return columns
 
         table_names = self.get_all_table_names()
-        print(f"Table names: {table_names}")
 
         table_columns = {table: get_table_columns(table) for table in table_names}
-        print(f"Table columns: {table_columns}")
 
         related_table_pairs = []
         for table, columns in table_columns.items():
@@ -130,7 +127,6 @@ class PrestoManager:
                     shared_columns = set(columns).intersection(other_columns)
                     if shared_columns:
                         related_table_pairs.append((table, other_table, list(shared_columns)))
-                        print(f"Related table pair found: {table}, {other_table}, {shared_columns}")
 
         return related_table_pairs
 
