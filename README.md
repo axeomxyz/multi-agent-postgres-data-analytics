@@ -52,15 +52,24 @@ To properly configure the Data Analyst AI Agent, you need to set the following e
 
 ```dotenv
 POSTGRES_DATABASE_URL="your_postgres_database_url"
+
 PRESTO_HTTP_SCHEME="http_or_https"
+
 PRESTO_USER="your_presto_username"
+
 PRESTO_PASSWORD="your_presto_password"
+
 PRESTO_HOST="your_presto_hostname"
+
 PRESTO_PORT="your_presto_port"
+
 PRESTO_CATALOG="your_presto_catalog"
+
 PRESTO_SCHEMA="your_presto_schema"
+
 OPENAI_API_KEY="your_openai_api_key"
-BASE_DIR="your_base_directory_for_storing_agent_results"
+
+BASE_DIR='./agent_results'
 ```
 
 Make sure to replace the placeholder values with your actual configuration details.
