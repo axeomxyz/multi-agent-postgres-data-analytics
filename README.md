@@ -37,9 +37,9 @@ This project uses Task, a simple task runner / build tool, to automate common de
 To use the tasks defined in our `Taskfile.yml`, you first need to install Task. Please follow the installation instructions on the Task website.
 
 ### Key Tasks
-- Install Dependencies: Run `task install to install project dependencies.
-- Run with PrestoDB: Execute `task start-presto -- PROMPT='your query here'` to start the application with PrestoDB.
-- Run with PostgreSQL: Execute `task start-postgres -- PROMPT='your query here'` to start the application with PostgreSQL.
+- Install Dependencies: Run `task install` to install project dependencies.
+- Run with PrestoDB: Execute `task start-presto --prompt='your query here'` to start the application with PrestoDB.
+- Run with PostgreSQL: Execute `task start-postgres --prompt='your query here'` to start the application with PostgreSQL.
 - Run Tests: Use `task test` to execute tests.
 - Lint and Format Code: Run `task lint` to lint and format the codebase.
 - Clean Up: Use `task clean` to clean up generated files or reset the project state.
