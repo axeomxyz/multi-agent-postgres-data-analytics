@@ -50,15 +50,17 @@ da_ai_agent/
 
 To properly configure the Data Analyst AI Agent, you need to set the following environment variables in a .env file:
 
-- POSTGRES_DATABASE_URL: Connection string for the PostgreSQL database.
-- PRESTO_HTTP_SCHEME: HTTP scheme for PrestoDB (http or https).
-- PRESTO_USER: Username for PrestoDB.
-- PRESTO_PASSWORD: Password for PrestoDB.
-- PRESTO_HOST: Hostname for PrestoDB.
-- PRESTO_PORT: Port number for PrestoDB.
-- PRESTO_CATALOG: Catalog name for PrestoDB.
-- PRESTO_SCHEMA: Schema name for PrestoDB.
-- OPENAI_API_KEY: API key for OpenAI services.
-- BASE_DIR: Base directory for storing agent results.
+```dotenv
+POSTGRES_DATABASE_URL="your_postgres_database_url"
+PRESTO_HTTP_SCHEME="http_or_https"
+PRESTO_USER="your_presto_username"
+PRESTO_PASSWORD="your_presto_password"
+PRESTO_HOST="your_presto_hostname"
+PRESTO_PORT="your_presto_port"
+PRESTO_CATALOG="your_presto_catalog"
+PRESTO_SCHEMA="your_presto_schema"
+OPENAI_API_KEY="your_openai_api_key"
+BASE_DIR="your_base_directory_for_storing_agent_results"
+```
 
 Make sure to replace the placeholder values with your actual configuration details.
