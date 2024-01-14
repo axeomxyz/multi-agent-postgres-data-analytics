@@ -1,5 +1,14 @@
 version: '3'
 
+dotenv: ["dev.env"]
+
+vars:
+  PROJECT_NAME: multi-agent-postgres-data-analytics
+  PYTHON_VERSION:
+  VENV:
+  PYTHON: python3
+  ENV: local
+
 tasks:
   install:
     desc: Install project dependencies
@@ -22,7 +31,7 @@ tasks:
       - poetry run pytest
 
   lint:
-    desc: Lint and format code
+    desc: "run linters"
     cmds:
       - poetry run flake8
       - poetry run black .
