@@ -8,8 +8,10 @@ This repository provides an AI-powered interface for interacting with PrestoDB a
 
 To run the project with PrestoDB, use the following command:
 
+```bash
 poetry run turbo_presto --prompt "[Include your prompt here]"
 poetry run start_presto --prompt "[Include your prompt here]"
+```
 
 Entry points for running PrestoDB tasks:
 
@@ -23,8 +25,10 @@ Entry points for running PrestoDB tasks:
 
 To run the project with a PostgreSQL database, you can use one of the following commands. Each command uses a different main file:
 
+```bash
 poetry run turbo_postgres --prompt "[Include your prompt here]"
 poetry run start_presto --prompt "[Include your prompt here]"
+```
 
 - start_postgres: Runs the application using main_postgres.py.
   start_postgres = "da_ai_agent.main_postgres:main"
