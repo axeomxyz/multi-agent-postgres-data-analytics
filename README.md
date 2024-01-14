@@ -32,6 +32,7 @@ poetry run turbo_postgres --prompt "[Include your prompt here]"
 poetry run start_postgres --prompt "[Include your prompt here]"
 ```
 
+```tree
 da_ai_agent/
 │
 ├── main_postgres.py       # Used by start_postgres
@@ -39,6 +40,8 @@ da_ai_agent/
 │
 └── turbo_main_postgres.py # Used by turbo_postgres
     └── turbo_postgres = "da_ai_agent.turbo_main_postgres:main"
+```
+
 
 ## Environment Variables
 
