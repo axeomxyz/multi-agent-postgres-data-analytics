@@ -30,6 +30,20 @@ If you encounter a warning that `poetry.lock` is not consistent with `pyproject.
 3. Set up environment variables:
 Create a .env file in the root directory with the necessary environment variables.
 
+### Using Task for Automation
+This project uses Task, a simple task runner / build tool, to automate common development tasks. This makes it easier to install dependencies, run the application, test, and more.
+
+Installation
+To use the tasks defined in our `Taskfile.yml`, you first need to install Task. Please follow the installation instructions on the Task website.
+
+Key Tasks
+- Install Dependencies: Run `task install to install project dependencies.
+- Run with PrestoDB: Execute `task start-presto -- PROMPT='your query here'` to start the application with PrestoDB.
+- Run with PostgreSQL: Execute `task start-postgres -- PROMPT='your query here'` to start the application with PostgreSQL.
+- Run Tests: Use `task test` to execute tests.
+- Lint and Format Code: Run `task lint` to lint and format the codebase.
+- Clean Up: Use `task clean` to clean up generated files or reset the project state.
+
 
 ## Set Up
 

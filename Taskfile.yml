@@ -1,0 +1,33 @@
+version: '3'
+
+tasks:
+  install:
+    desc: Install project dependencies
+    cmds:
+      - poetry install
+
+  start-presto:
+    desc: Run the project with PrestoDB
+    cmds:
+      - poetry run start_presto --prompt "{{.PROMPT}}"
+
+  start-postgres:
+    desc: Run the project with PostgreSQL
+    cmds:
+      - poetry run start_postgres --prompt "{{.PROMPT}}"
+
+  test:
+    desc: Run the tests
+    cmds:
+      - poetry run pytest
+
+  lint:
+    desc: Lint and format code
+    cmds:
+      - poetry run flake8
+      - poetry run black .
+
+  clean:
+    desc: Clean up generated files
+    cmds:
+      - rm -rf some_generated_files_directory/
