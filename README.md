@@ -2,13 +2,58 @@
 
 This repository provides an AI-powered interface for interacting with PrestoDB and PostgreSQL databases. Users can input common language queries and receive SQL statements and results directly from their databases.
 
+## Project Description
+
+[Provide a more detailed description of your project, its purpose, and key features.]
+
+## Requirements
+
+[List prerequisites needed to run the project.]
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+   git clone [repository URL]
+   cd postgres-da-ai-agent
+```
+
+2. Install dependencies:
+
+```bash
+poetry install
+```   
+
+3. Set up environment variables:
+Create a .env file in the root directory with the necessary environment variables.
+
+
 ## Set Up
+
+### Environment Variables
+
+```dotenv
+POSTGRES_DATABASE_URL="your_postgres_database_url"
+PRESTO_HTTP_SCHEME="http_or_https"
+PRESTO_USER="your_presto_username"
+PRESTO_PASSWORD="your_presto_password"
+PRESTO_HOST="your_presto_hostname"
+PRESTO_PORT="your_presto_port"
+PRESTO_CATALOG="your_presto_catalog"
+PRESTO_SCHEMA="your_presto_schema"
+OPENAI_API_KEY="your_openai_api_key"
+BASE_DIR='./agent_results'
+```
+
+## Usage
 
 ### PrestoDB Setup
 
 To run the project with PrestoDB, use the following commands:
 
 ```bash
+
 poetry run turbo_presto --prompt "[Include your prompt here]"
 poetry run start_presto --prompt "[Include your prompt here]"
 ```
@@ -27,6 +72,7 @@ da_ai_agent/
 
 ### PostgreSQL Setup
 
+
 To run the project with a PostgreSQL database, use the following commands:
 
 ```bash
@@ -35,7 +81,6 @@ poetry run start_postgres --prompt "[Include your prompt here]"
 ```
 
 Entry points for running PostgreSQL tasks:
-
 ```tree
 da_ai_agent/
 │
@@ -46,21 +91,29 @@ da_ai_agent/
     └── turbo_postgres = "da_ai_agent.turbo_main_postgres:main"
 ```
 
-## Environment Variables
+## Configuration
 
-To properly configure the Data Analyst AI Agent, you need to set the following environment variables in a .env file:
+[Include detailed instructions on how to configure your project, if applicable.]
 
-```dotenv
-POSTGRES_DATABASE_URL="your_postgres_database_url"
-PRESTO_HTTP_SCHEME="http_or_https"
-PRESTO_USER="your_presto_username"
-PRESTO_PASSWORD="your_presto_password"
-PRESTO_HOST="your_presto_hostname"
-PRESTO_PORT="your_presto_port"
-PRESTO_CATALOG="your_presto_catalog"
-PRESTO_SCHEMA="your_presto_schema"
-OPENAI_API_KEY="your_openai_api_key"
-BASE_DIR='./agent_results'
-```
+## Testing
 
-Make sure to replace the placeholder values with your actual configuration details.
+[Provide instructions on how to run tests, if your project includes them.]
+
+## Contributing
+
+[Include guidelines for how others can contribute to the project.]
+
+## License
+
+[Include information about your project's license.]
+
+## Acknowledgments
+
+## Acknowledgments
+
+Thanks to all the contributors who have helped with this project. You can see a list of contributors [here](https://github.com/axeomxyz/multi-agent-postgres-data-analytics/contributors).
+
+
+## Contact
+
+[Provide contact information for project maintainers or contributors.]
