@@ -100,8 +100,6 @@ def run_framework(query: str):
     ):
         database_embedder = embeddings_presto.DatabaseEmbedder(db)
 
-        # table_definitions = database_embedder.get_similar_table_defs_for_prompt(raw_prompt)
-
         # Retrieve all table definitions
         table_definitions = database_embedder.get_all_table_defs()
 
