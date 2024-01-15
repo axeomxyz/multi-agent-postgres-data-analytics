@@ -1,5 +1,6 @@
-from datetime import datetime
 import json
+from datetime import datetime
+
 import psycopg2
 from psycopg2.sql import SQL, Identifier
 

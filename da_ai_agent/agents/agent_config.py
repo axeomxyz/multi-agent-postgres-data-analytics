@@ -1,6 +1,5 @@
 import autogen
 
-
 # Build the GPT_Configuration object
 # Base Configuration
 base_config = {

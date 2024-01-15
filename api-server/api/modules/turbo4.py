@@ -4,18 +4,19 @@ Clone of postgres_da_ai_agent/agents/turbo4.py
 
 import json
 import os
-import openai
 import time
-from typing import Callable, Dict, Any, List, Optional, Union, Tuple
+from dataclasses import asdict, dataclass
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+
 import dotenv
-from dataclasses import dataclass, asdict
-from openai import OpenAI
-from openai.types.beta import Thread, Assistant
-from openai.types import FileObject
-from openai.types.beta.threads.thread_message import ThreadMessage
-from openai.types.beta.threads.run_submit_tool_outputs_params import ToolOutput
+import openai
 from modules import llm
 from modules.models import Chat, TurboTool
+from openai import OpenAI
+from openai.types import FileObject
+from openai.types.beta import Assistant, Thread
+from openai.types.beta.threads.run_submit_tool_outputs_params import ToolOutput
+from openai.types.beta.threads.thread_message import ThreadMessage
 
 dotenv.load_dotenv()
 
@@ -26,7 +27,6 @@ class Turbo4:
     """
 
     def __init__(self):
-        openai.api_key = os.environ.get("OPENAI_API_KEY")
         self.client: openai = OpenAI()
 
         self.map_function_tools: Dict[str, TurboTool] = {}

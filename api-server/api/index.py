@@ -1,12 +1,11 @@
 import json
-from flask import Flask, Request, Response, jsonify, request, make_response
-import dotenv
-from modules import db, llm, emb, instruments
-from modules.turbo4 import Turbo4
-
 import os
 
+import dotenv
+from flask import Flask, Request, Response, jsonify, make_response, request
+from modules import db, emb, instruments, llm
 from modules.models import TurboTool
+from modules.turbo4 import Turbo4
 from psycopg2 import Error as PostgresError
 
 app = Flask(__name__)

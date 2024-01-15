@@ -1,18 +1,26 @@
-from da_ai_agent.agents.turbo4 import Turbo4
-from da_ai_agent.data_types import Chat, TurboTool
-from typing import List, Callable
-import os
-from da_ai_agent.agents.instruments import PrestoAgentInstruments
-from da_ai_agent.modules import llm
-from da_ai_agent.modules import rand
-from da_ai_agent.modules import embeddings_presto
 import argparse
+import os
+from typing import Callable, List
+
 import dotenv
 import prestodb
 
+from da_ai_agent.agents.instruments import PrestoAgentInstruments
+from da_ai_agent.agents.turbo4 import Turbo4
+from da_ai_agent.data_types import Chat, TurboTool
+from da_ai_agent.modules import embeddings_presto, llm, rand
+
 dotenv.load_dotenv()
 
-required_env_vars = ["PRESTO_HOST", "OPENAI_API_KEY", "PRESTO_PORT", "PRESTO_USER", "PRESTO_CATALOG", "PRESTO_SCHEMA", "PRESTO_HTTP_SCHEME"]
+required_env_vars = [
+    "PRESTO_HOST",
+    "OPENAI_API_KEY",
+    "PRESTO_PORT",
+    "PRESTO_USER",
+    "PRESTO_CATALOG",
+    "PRESTO_SCHEMA",
+    "PRESTO_HTTP_SCHEME",
+]
 
 for var in required_env_vars:
     if not os.environ.get(var):
@@ -21,17 +29,21 @@ for var in required_env_vars:
 # ---------------- Constants ---------------------------------
 
 # Check if PRESTO_PASSWORD is present in the environment, use None if not provided
-presto_password = os.getenv('PRESTO_PASSWORD', None)
-auth = prestodb.auth.BasicAuthentication(os.getenv('PRESTO_USER'), presto_password) if presto_password else None
+presto_password = os.getenv("PRESTO_PASSWORD", None)
+auth = (
+    prestodb.auth.BasicAuthentication(os.getenv("PRESTO_USER"), presto_password)
+    if presto_password
+    else None
+)
 
 PRESTO_DB_CONFIG = {
-    'host': os.getenv('PRESTO_HOST'),
-    'port': int(os.getenv('PRESTO_PORT')),
-    'user': os.getenv('PRESTO_USER'),
-    'catalog': os.getenv('PRESTO_CATALOG'),
-    'schema': os.getenv('PRESTO_SCHEMA'),
-    'http_scheme': os.getenv('PRESTO_HTTP_SCHEME'),
-    'auth': auth
+    "host": os.getenv("PRESTO_HOST"),
+    "port": int(os.getenv("PRESTO_PORT")),
+    "user": os.getenv("PRESTO_USER"),
+    "catalog": os.getenv("PRESTO_CATALOG"),
+    "schema": os.getenv("PRESTO_SCHEMA"),
+    "http_scheme": os.getenv("PRESTO_HTTP_SCHEME"),
+    "auth": auth,
 }
 
 PRESTO_TABLE_DEFINITIONS_CAP_REF = "TABLE_DEFINITIONS"
@@ -82,7 +94,10 @@ def run_framework(query: str):
     assistant = Turbo4(agent_instruments)
     session_id = rand.generate_session_id(assistant_name + query)
 
-    with PrestoAgentInstruments(PRESTO_DB_CONFIG, session_id) as (agent_instruments, db):
+    with PrestoAgentInstruments(PRESTO_DB_CONFIG, session_id) as (
+        agent_instruments,
+        db,
+    ):
         database_embedder = embeddings_presto.DatabaseEmbedder(db)
 
         # table_definitions = database_embedder.get_similar_table_defs_for_prompt(raw_prompt)
@@ -97,7 +112,9 @@ def run_framework(query: str):
         schema_output_file = agent_instruments.make_table_definitions_file()
 
         # Create the full file path for the schema_description.txt
-        schema_description_output_file = agent_instruments.make_schema_description_file()
+        schema_description_output_file = (
+            agent_instruments.make_schema_description_file()
+        )
 
         prompt = llm.add_cap_ref(
             prompt,
@@ -120,7 +137,9 @@ def run_framework(query: str):
             .add_message(prompt)
             .run_thread()
             .store_table_definitions(schema_output_file, table_definitions)
-            .store_schema_description(schema_description_output_file, schema_description)
+            .store_schema_description(
+                schema_description_output_file, schema_description
+            )
             .add_message(
                 "Use the run_sql function to run the SQL you've just generated.",
             )
@@ -133,33 +152,6 @@ def run_framework(query: str):
         )
 
         print(f"✅ Turbo4 Assistant finished.")
-
-        # ---------- Simple Prompt Solution - Same thing, only 2 api calls instead of 8+ ------------
-        # sql_response = llm.prompt(
-        #     prompt,
-        #     model="gpt-4-1106-preview",
-        #     instructions="You're an elite SQL developer. You generate the most concise and performant SQL queries.",
-        # )
-        # llm.prompt_func(
-        #     "Use the run_sql function to run the SQL you've just generated: "
-        #     + sql_response,
-        #     model="gpt-4-1106-preview",
-        #     instructions="You're an elite SQL developer. You generate the most concise and performant SQL queries.",
-        #     turbo_tools=tools,
-        # )
-        # agent_instruments.validate_run_sql()
-
-        # ----------- Example use case of Turbo4 and the Assistants API ------------
-
-        # (
-        #     assistant.get_or_create_assistant(assistant_name)
-        #     .make_thread()
-        #     .equip_tools(tools)
-        #     .add_message("Generate 10 random facts about LLM technology.")
-        #     .run_thread()
-        #     .add_message("Use the store_fact function to 1 fact.")
-        #     .run_thread(toolbox=["store_fact"])
-        # )
 
 
 # Function to handle command-line arguments and invoke run_framework

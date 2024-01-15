@@ -5,12 +5,12 @@ Purpose:
 """
 
 import json
-import sys
-from dotenv import load_dotenv
 import os
+import sys
 from typing import Any, Dict, List
-import openai
 
+import openai
+from dotenv import load_dotenv
 from modules.models import TurboTool
 
 # load .env file
@@ -19,7 +19,6 @@ load_dotenv()
 assert os.environ.get("OPENAI_API_KEY")
 
 # get openai api key
-openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 
 run_sql_tool_config = {

@@ -2,21 +2,17 @@
 Heads up: in v7 pyautogen doesn't work with the latest openai version so this file has been commented out via pyproject.toml
 """
 
-import os
-from da_ai_agent.agents.instruments import PostgresAgentInstruments
-from da_ai_agent.modules.db_postgres import PostgresManager
-from da_ai_agent.modules import llm
-from da_ai_agent.modules import orchestrator
-from da_ai_agent.modules import rand
-from da_ai_agent.modules import file
-from da_ai_agent.modules import embeddings_postgres
-from da_ai_agent.agents import agents_postgres
-import dotenv
 import argparse
+import os
+
 import autogen
+import dotenv
 
+from da_ai_agent.agents import agents_postgres
+from da_ai_agent.agents.instruments import PostgresAgentInstruments
 from da_ai_agent.data_types import ConversationResult
-
+from da_ai_agent.modules import embeddings_postgres, file, llm, orchestrator, rand
+from da_ai_agent.modules.db_postgres import PostgresManager
 
 # ---------------- Your Environment Variables ----------------
 

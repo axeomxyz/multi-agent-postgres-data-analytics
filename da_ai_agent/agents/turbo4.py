@@ -1,18 +1,20 @@
 import json
 import os
-import openai
 import time
-from typing import Callable, Dict, Any, List, Optional, Union, Tuple
-import dotenv
-from dataclasses import dataclass, asdict
-from openai.types.beta import Thread, Assistant
-from openai.types import FileObject
-from openai.types.beta.threads.thread_message import ThreadMessage
-from openai.types.beta.threads.run_submit_tool_outputs_params import ToolOutput
-from da_ai_agent.modules import llm
-from da_ai_agent.data_types import Chat, TurboTool
-from da_ai_agent.modules.embeddings_presto import DatabaseEmbedder
+from dataclasses import asdict, dataclass
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
+import dotenv
+import openai
+from openai import OpenAI
+from openai.types import FileObject
+from openai.types.beta import Assistant, Thread
+from openai.types.beta.threads.run_submit_tool_outputs_params import ToolOutput
+from openai.types.beta.threads.thread_message import ThreadMessage
+
+from da_ai_agent.data_types import Chat, TurboTool
+from da_ai_agent.modules import llm
+from da_ai_agent.modules.embeddings_presto import DatabaseEmbedder
 
 dotenv.load_dotenv()
 
@@ -23,7 +25,6 @@ class Turbo4:
     """
 
     def __init__(self, agent_instruments=None):
-        openai.api_key = os.environ.get("OPENAI_API_KEY")
         self.client = openai.OpenAI()
         self.agent_instruments = agent_instruments
         self.map_function_tools: Dict[str, TurboTool] = {}
@@ -107,7 +108,9 @@ class Turbo4:
 
         return self
 
-    def store_schema_description(self, schema_description_output_file: str, schema_description):
+    def store_schema_description(
+        self, schema_description_output_file: str, schema_description
+    ):
         """
         Stores the schema description in a TXT file.
 
@@ -288,7 +291,9 @@ class Turbo4:
             )
             if run_status.status == "requires_action":
                 tool_outputs: List[ToolOutput] = []
-                for tool_call in run_status.required_action.submit_tool_outputs.tool_calls:
+                for (
+                    tool_call
+                ) in run_status.required_action.submit_tool_outputs.tool_calls:
                     tool_function = tool_call.function
                     tool_name = tool_function.name
 
@@ -320,7 +325,9 @@ class Turbo4:
 
                 # Store SQL results if available
                 if sql_results:
-                    self.store_query_results(self.agent_instruments.make_query_results_file(), sql_results)
+                    self.store_query_results(
+                        self.agent_instruments.make_query_results_file(), sql_results
+                    )
 
                 return self
 
@@ -334,10 +341,10 @@ class Turbo4:
         for column_name in self.extract_column_names(sql_results):
             try:
                 # Generate a short definition for each column
-                response = openai.Completion.create(
-                    engine="gpt-4-1106-preview",  # Update to the latest available model
+                response = client.completions.create(
+                    model="gpt-4-1106-preview",  # Update to the latest available model
                     prompt=f"Define {column_name} in 2-5 words:",
-                    max_tokens=10
+                    max_tokens=10,
                 )
                 definition = response.choices[0].text.strip()
                 column_definitions[column_name] = definition

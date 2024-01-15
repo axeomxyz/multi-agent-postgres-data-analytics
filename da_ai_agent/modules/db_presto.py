@@ -1,6 +1,7 @@
 import json
-import prestodb
 from datetime import datetime
+
+import prestodb
 
 
 class PrestoManager:
@@ -21,15 +22,15 @@ class PrestoManager:
     def connect_with_url(self, config):
         # If auth key is None, do not include it in the connection parameters
         conn_params = {
-            'host': config['host'],
-            'port': config['port'],
-            'user': config['user'],
-            'catalog': config['catalog'],
-            'schema': config['schema'],
-            'http_scheme': config['http_scheme'],
+            "host": config["host"],
+            "port": config["port"],
+            "user": config["user"],
+            "catalog": config["catalog"],
+            "schema": config["schema"],
+            "http_scheme": config["http_scheme"],
         }
-        if config.get('auth'):
-            conn_params['auth'] = config['auth']
+        if config.get("auth"):
+            conn_params["auth"] = config["auth"]
 
         self.conn = prestodb.dbapi.connect(**conn_params)
         self.cur = self.conn.cursor()
@@ -59,15 +60,13 @@ class PrestoManager:
 
         # Joining all column values from each row, separated by commas
         # Then joining all rows, separated by a newline
-        result_rows = "\n".join(
-            ",".join(str(value) for value in row) for row in rows
-        )
+        result_rows = "\n".join(",".join(str(value) for value in row) for row in rows)
 
         # Combine column names and rows
         result_text = column_names + "\n" + result_rows
 
         # Print the entire results
-        print(result_text)
+        # print(result_text)
 
         return result_text
 
@@ -80,10 +79,9 @@ class PrestoManager:
         return str(obj)
 
     def get_all_table_names(self):
-        print("Starting get_all_table_names")
         self.cur.execute("SHOW TABLES")
         tables = [row[0] for row in self.cur.fetchall()]
-        print(f"Tables found: {tables}")
+
         return tables
 
     def get_table_definition(self, table_name):
@@ -100,13 +98,13 @@ class PrestoManager:
         # Adding each column as a key-value pair in the table definition dictionary
         for row in rows:
             column_name, column_type, _ = row[:3]
-            table_definition[table_name.upper()][column_name.lower()] = column_type.lower()
+            table_definition[table_name.upper()][
+                column_name.lower()
+            ] = column_type.lower()
 
         return table_definition
 
     def get_related_tables_with_shared_columns(self):
-
-
         def get_table_columns(table_name):
             """
             Local helper function to get column names for a given table.
@@ -121,12 +119,17 @@ class PrestoManager:
         table_columns = {table: get_table_columns(table) for table in table_names}
 
         related_table_pairs = []
-        for table, columns in table_columns.items():
-            for other_table, other_columns in table_columns.items():
-                if table < other_table:
-                    shared_columns = set(columns).intersection(other_columns)
-                    if shared_columns:
-                        related_table_pairs.append((table, other_table, list(shared_columns)))
+
+        # Loop through each pair of tables only once
+        for i, table in enumerate(table_names):
+            for other_table in table_names[i + 1 :]:
+                shared_columns = set(table_columns[table]).intersection(
+                    table_columns[other_table]
+                )
+                if shared_columns:
+                    related_table_pairs.append(
+                        (table, other_table, list(shared_columns))
+                    )
 
         return related_table_pairs
 
@@ -150,4 +153,3 @@ class PrestoManager:
         for table_name in table_names:
             definitions.update(self.get_table_definition(table_name))
         return definitions
-

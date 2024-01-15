@@ -1,7 +1,8 @@
 import json
-from modules.db import PostgresManager
-from modules import file
 import os
+
+from modules import file
+from modules.db import PostgresManager
 
 BASE_DIR = os.environ.get("BASE_DIR", "./agent_results")
 

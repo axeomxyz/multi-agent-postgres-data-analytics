@@ -1,6 +1,6 @@
-from typing import Callable, List
-from dataclasses import dataclass, field
 import time
+from dataclasses import dataclass, field
+from typing import Callable, List
 
 
 @dataclass

@@ -1,12 +1,11 @@
+import argparse
+import os
+from typing import Callable, List
+
+from da_ai_agent.agents.instruments import PostgresAgentInstruments
 from da_ai_agent.agents.turbo4 import Turbo4
 from da_ai_agent.data_types import Chat, TurboTool
-from typing import List, Callable
-import os
-from da_ai_agent.agents.instruments import PostgresAgentInstruments
-from da_ai_agent.modules import llm
-from da_ai_agent.modules import rand
-from da_ai_agent.modules import embeddings_postgres
-import argparse
+from da_ai_agent.modules import embeddings_postgres, llm, rand
 
 DB_URL = os.environ.get("DATABASE_URL")
 POSTGRES_TABLE_DEFINITIONS_CAP_REF = "TABLE_DEFINITIONS"

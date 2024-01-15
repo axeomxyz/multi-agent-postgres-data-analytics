@@ -19,6 +19,10 @@ tiktoken = "^0.5.1"
 guidance = "^0.0.64"
 presto-python-client = "^0.8.4"
 pyautogen = "^0.2.2"
+isort = "^5.13.2"
+black = "^23.12.1"
+pylint = "^3.0.3"
+mypy = "^1.8.0"
 
 
 [build-system]

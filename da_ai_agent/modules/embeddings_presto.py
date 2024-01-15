@@ -1,6 +1,11 @@
 import json
+
+from openai import OpenAI
+
+client = OpenAI()
+
 from sklearn.metrics.pairwise import cosine_similarity
-from transformers import BertTokenizer, BertModel
+from transformers import BertModel, BertTokenizer
 
 from da_ai_agent.modules.db_presto import PrestoManager
 
@@ -45,10 +50,16 @@ class DatabaseEmbedder:
         yet store it in the original structured format.
         """
         # Correctly handle table_def as a dictionary
-        col_details_str = ' '.join([f"{col_name} {data_type}" for col_name, data_type in table_def.items()])
+        col_details_str = " ".join(
+            [f"{col_name} {data_type}" for col_name, data_type in table_def.items()]
+        )
 
-        self.map_name_to_embeddings[table_name] = self.compute_embeddings(col_details_str)
-        self.map_name_to_table_def[table_name] = table_def  # Store the original structure
+        self.map_name_to_embeddings[table_name] = self.compute_embeddings(
+            col_details_str
+        )
+        self.map_name_to_table_def[
+            table_name
+        ] = table_def  # Store the original structure
 
     def compute_embeddings(self, text):
         """
@@ -118,11 +129,60 @@ class DatabaseEmbedder:
             formatted_table_defs += f"{table_name.upper()}\n"  # Table name in uppercase
 
             for column_name, data_type in table_def.items():
-                formatted_table_defs += f"{column_name}, {data_type}\n"
+                # Placeholder for column description
+                column_description = self.get_column_description(
+                    table_name, column_name, data_type
+                )
 
-            formatted_table_defs += "\n"  # Add a blank line between tables for readability
+                formatted_table_defs += (
+                    f"{column_name}, {data_type}, {column_description}\n"
+                )
+
+            formatted_table_defs += (
+                "\n"  # Add a blank line between tables for readability
+            )
 
         return formatted_table_defs
+
+    def get_column_description(self, table_name: str, column_name: str, data_type: str):
+        """
+        Generate a one-line sentence description for the given column using OpenAI API.
+
+        :param table_name: Name of the table.
+        :param column_name: Name of the column.
+        :param data_type: Data type of the column.
+        :return: A string containing the description of the column.
+        """
+        # Placeholder for column description
+        return "This is a column description placeholder"
+
+        # The following code is related to OpenAI API functionality and has been commented out.
+        # You can uncomment and modify this section later as needed.
+        """
+        # Construct the prompt
+        prompt = f"Table: {table_name}\n" \
+                 f"Column: {column_name}\n" \
+                 f"Data Type: {data_type}\n" \
+                 f"Description:"
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4-1106-preview",
+                messages=[
+                    {"role": "system", "content": "Generate a brief description for a database column."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+
+            # Extract the description from the response
+            description = response.choices[0].message.content
+
+            return description
+        except Exception as e:
+            # Handle any exceptions (e.g., API errors)
+            print(f"Error generating column description: {e}")
+            return "Description not available."
+        """
 
     def get_schema_description(self):
         related_tables_info = self.db.get_related_tables_with_shared_columns()
@@ -145,7 +205,9 @@ class DatabaseEmbedder:
             # Pass the table definition directly to add_table
             self.add_table(name, table_def)
 
-        all_table_defs = self.get_table_definitions_from_names(map_table_name_to_table_def.keys())
+        all_table_defs = self.get_table_definitions_from_names(
+            map_table_name_to_table_def.keys()
+        )
 
         # The formatted table definitions are returned
         return all_table_defs

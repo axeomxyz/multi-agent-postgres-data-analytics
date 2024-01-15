@@ -71,31 +71,22 @@ tasks:
 
   pylint:
     cmds:
-      - "poetry run pylint app"
+      - "poetry run pylint"
 
   pytest:
     desc: "run pytest locally (pass args after '--')"
-    deps:
-      - docker-db-up
     cmds:
-      - alembic downgrade base
-      - alembic upgrade head
       - poetry run pytest -s -vv -x tests/ --cov=app {{.CLI_ARGS}}
 
-  run:
-    desc: "Run app locally"
-    cmds:
-      - uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
-  start-presto:
+  turbo-presto:
     desc: Run the project with PrestoDB
     cmds:
-      - poetry run start_presto --prompt "{{.PROMPT}}"
+      - poetry run turbo_presto --prompt "{{.CLI-ARGS}}"
 
-  start-postgres:
+  turbo-postgres:
     desc: Run the project with PostgreSQL
     cmds:
-      - poetry run start_postgres --prompt "{{.PROMPT}}"
+      - poetry run turbo_postgres --prompt "{{.CLI_ARGS}}"
 
   test:
     desc: "Run the tests"
@@ -117,6 +108,6 @@ tasks:
       - task: mypy
 
   clean:
-    desc: "Clean up generated files"
+    desc: "Clean up Agent Results generated files and folders"
     cmds:
       - rm -rf ./agent_results

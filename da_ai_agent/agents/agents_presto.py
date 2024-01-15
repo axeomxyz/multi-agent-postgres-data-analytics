@@ -1,14 +1,16 @@
-from typing import Optional, List, Dict, Any
-from da_ai_agent.agents.instruments import PrestoAgentInstruments
-from da_ai_agent.modules import orchestrator
-from da_ai_agent.agents import agent_config
+from typing import Any, Dict, List, Optional
+
 import autogen
 import guidance
 
+from da_ai_agent.agents import agent_config
+from da_ai_agent.agents.instruments import PrestoAgentInstruments
+from da_ai_agent.modules import orchestrator
+
 # ------------------------ PROMPTS ------------------------
-USER_PROXY_PROMPT = ("A human admin. Interact with the Product Manager to discuss the plan. Plan execution needs to be approved by this admin.")
-DATA_ENGINEER_PROMPT = ("A Data Engineer. Generate the initial SQL based on the requirements provided. Send it to the Sr Data Analyst to be executed.")
-SR_DATA_ANALYST_PROMPT = ("Sr Data Analyst. You run the SQL query using the run_sql function, send the raw response to the data viz team. You use the run_sql function exclusively.")
+USER_PROXY_PROMPT = "A human admin. Interact with the Product Manager to discuss the plan. Plan execution needs to be approved by this admin."
+DATA_ENGINEER_PROMPT = "A Data Engineer. Generate the initial SQL based on the requirements provided. Send it to the Sr Data Analyst to be executed."
+SR_DATA_ANALYST_PROMPT = "Sr Data Analyst. You run the SQL query using the run_sql function, send the raw response to the data viz team. You use the run_sql function exclusively."
 GUIDANCE_SCRUM_MASTER_SQL_NLQ_PROMPT = """
 Is the following block of text a SQL Natural Language Query (NLQ)? Please rank from 1 to 5, where:
 1: Definitely not NLQ

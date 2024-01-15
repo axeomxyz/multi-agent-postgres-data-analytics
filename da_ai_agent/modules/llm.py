@@ -5,12 +5,13 @@ Purpose:
 """
 
 import json
-import sys
-from dotenv import load_dotenv
 import os
+import sys
 from typing import Any, Dict, List
+
 import openai
 import tiktoken
+from dotenv import load_dotenv
 
 from da_ai_agent.data_types import TurboTool
 
@@ -20,7 +21,6 @@ load_dotenv()
 assert os.environ.get("OPENAI_API_KEY")
 
 # get openai api key
-openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # ------------------ helpers ------------------
 

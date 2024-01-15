@@ -1,29 +1,33 @@
 """
 Heads up: in v7 pyautogen doesn't work with the latest openai version so this file has been commented out via pyproject.toml
 """
+import argparse
 import json
 import os
 
+import autogen
+import dotenv
+import prestodb
+
 from da_ai_agent.agents import agents_presto
 from da_ai_agent.agents.instruments import PrestoAgentInstruments
-from da_ai_agent.modules.db_presto import PrestoManager
-from da_ai_agent.modules import llm
-from da_ai_agent.modules import orchestrator
-from da_ai_agent.modules import rand
-from da_ai_agent.modules import file
-from da_ai_agent.modules import embeddings_presto
-import prestodb
-import dotenv
-import argparse
-import autogen
-
 from da_ai_agent.data_types import ConversationResult
+from da_ai_agent.modules import embeddings_presto, file, llm, orchestrator, rand
+from da_ai_agent.modules.db_presto import PrestoManager
 
 # ---------------- Your Environment Variables ----------------
 
 dotenv.load_dotenv()
 
-required_env_vars = ["PRESTO_HOST", "OPENAI_API_KEY", "PRESTO_PORT", "PRESTO_USER", "PRESTO_CATALOG", "PRESTO_SCHEMA", "PRESTO_HTTP_SCHEME"]
+required_env_vars = [
+    "PRESTO_HOST",
+    "OPENAI_API_KEY",
+    "PRESTO_PORT",
+    "PRESTO_USER",
+    "PRESTO_CATALOG",
+    "PRESTO_SCHEMA",
+    "PRESTO_HTTP_SCHEME",
+]
 
 for var in required_env_vars:
     if not os.environ.get(var):
@@ -32,17 +36,21 @@ for var in required_env_vars:
 # ---------------- Constants ---------------------------------
 
 # Check if PRESTO_PASSWORD is present in the environment, use None if not provided
-presto_password = os.getenv('PRESTO_PASSWORD', None)
-auth = prestodb.auth.BasicAuthentication(os.getenv('PRESTO_USER'), presto_password) if presto_password else None
+presto_password = os.getenv("PRESTO_PASSWORD", None)
+auth = (
+    prestodb.auth.BasicAuthentication(os.getenv("PRESTO_USER"), presto_password)
+    if presto_password
+    else None
+)
 
 PRESTO_DB_CONFIG = {
-    'host': os.getenv('PRESTO_HOST'),
-    'port': int(os.getenv('PRESTO_PORT')),
-    'user': os.getenv('PRESTO_USER'),
-    'catalog': os.getenv('PRESTO_CATALOG'),
-    'schema': os.getenv('PRESTO_SCHEMA'),
-    'http_scheme': os.getenv('PRESTO_HTTP_SCHEME'),
-    'auth': auth
+    "host": os.getenv("PRESTO_HOST"),
+    "port": int(os.getenv("PRESTO_PORT")),
+    "user": os.getenv("PRESTO_USER"),
+    "catalog": os.getenv("PRESTO_CATALOG"),
+    "schema": os.getenv("PRESTO_SCHEMA"),
+    "http_scheme": os.getenv("PRESTO_HTTP_SCHEME"),
+    "auth": auth,
 }
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
@@ -69,7 +77,10 @@ def main():
 
     # ---------------- Create Agent Instruments And Build Database Connection ----------------
 
-    with PrestoAgentInstruments(PRESTO_DB_CONFIG, session_id) as (agent_instruments, db):
+    with PrestoAgentInstruments(PRESTO_DB_CONFIG, session_id) as (
+        agent_instruments,
+        db,
+    ):
         # TODO: Fix PRESTO_DB_URL set up as dictionary
 
         # ----------- Gate Team: Prevent bad prompts from running and burning your $$$ -------------
