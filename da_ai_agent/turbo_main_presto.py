@@ -5,6 +5,8 @@ from typing import Callable, List
 import dotenv
 import prestodb
 
+import inquirer
+
 from da_ai_agent.agents.instruments import PrestoAgentInstruments
 from da_ai_agent.agents.turbo4 import Turbo4
 from da_ai_agent.data_types import Chat, TurboTool
@@ -152,7 +154,6 @@ def run_framework(query: str):
         print(f"✅ Turbo4 Assistant finished.")
 
 
-# Function to handle command-line arguments and invoke run_framework
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--prompt", help="The prompt for the AI")
@@ -161,8 +162,6 @@ def main():
     if not args.prompt:
         print("Please provide a prompt")
         return
-
-    run_framework(args.prompt)
 
 
 if __name__ == "__main__":
